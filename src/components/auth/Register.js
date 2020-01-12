@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from "axios";
 
 class Register extends Component {
   constructor() {
@@ -7,8 +8,7 @@ class Register extends Component {
       name: "",
       email: "",
       password: "",
-      password2: "",
-      errors: {}
+      password2: ""
     };
 
     this.onChange = this.onChange.bind(this);
@@ -23,14 +23,23 @@ class Register extends Component {
 
   onSubmit(e) {
     e.preventDefault();
-    const newUser = {
-      name:this.state.name,
-      email:this.state.email,
-      password:this.state.password,
-      password2:this.state.password2
-    }
 
-    console.log(newUser)
+    if (this.state.password !== this.state.password2) {
+      alert("confirm password doesn't match");
+    } else {
+      const newUser = {
+        name: this.state.name,
+        email: this.state.email,
+        password: this.state.password,
+        password2: this.state.password2
+      };
+
+      console.log(newUser);
+      // axios
+      //   .post("/api/users/register", newUser)
+      //   .then(res => console.log(res))
+      //   .catch(err => console.log(err.response.data));
+    }
   }
 
   render() {
