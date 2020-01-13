@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
+import { login } from "../../actions/auth";
 
 class Login extends Component {
   constructor() {
@@ -13,6 +15,18 @@ class Login extends Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
 
+  componentDidMount() {
+    if (this.props.isAuthenticated) {
+      this.props.history.push("/dashboard");
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.isAuthenticated) {
+      this.props.history.push("/dashboard");
+    }
+  }
+
   onChange(e) {
     this.setState({
       [e.target.name]: e.target.value
@@ -21,12 +35,12 @@ class Login extends Component {
 
   onSubmit(e) {
     e.preventDefault();
-    const newUser = {
+    const loginUser = {
       email: this.state.email,
       password: this.state.password
     };
 
-    console.log(newUser);
+    this.props.login(loginUser);
   }
 
   render() {
@@ -70,4 +84,8 @@ class Login extends Component {
   }
 }
 
-export default Login;
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated
+});
+
+export default connect(mapStateToProps, { login })(Login);

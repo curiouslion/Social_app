@@ -1,5 +1,7 @@
 import React, { Component } from "react";
-import axios from "axios";
+import { connect } from "react-redux";
+import { register } from "../../actions/auth";
+import { Redirect } from "react-router-dom";
 
 class Register extends Component {
   constructor() {
@@ -34,15 +36,15 @@ class Register extends Component {
         password2: this.state.password2
       };
 
-      console.log(newUser);
-      // axios
-      //   .post("/api/users/register", newUser)
-      //   .then(res => console.log(res))
-      //   .catch(err => console.log(err.response.data));
+      this.props.register(newUser);
     }
   }
 
   render() {
+    if (this.props.isAuthenticated) {
+      return <Redirect to="/dashboard" />;
+    }
+
     return (
       <div>
         <div className="register">
@@ -50,9 +52,7 @@ class Register extends Component {
             <div className="row">
               <div className="col-md-8 m-auto">
                 <h1 className="display-4 text-center">Sign Up</h1>
-                <p className="lead text-center">
-                  Create your DevConnector account
-                </p>
+                <p className="lead text-center">Create your DevJoin account</p>
                 <form onSubmit={this.onSubmit}>
                   <div className="form-group">
                     <input
@@ -112,4 +112,8 @@ class Register extends Component {
   }
 }
 
-export default Register;
+const mapStateToProps = state => ({
+  isAuthenticated: state.auth.isAuthenticated
+});
+
+export default connect(mapStateToProps, { register })(Register);
