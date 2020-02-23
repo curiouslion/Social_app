@@ -1,119 +1,98 @@
-import React, { Component } from "react";
+import React, { Fragment, useState } from "react";
+import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
+import { setAlert } from "../../actions/alert";
 import { register } from "../../actions/auth";
-import { Redirect } from "react-router-dom";
+import PropTypes from "prop-types";
 
-class Register extends Component {
-  constructor() {
-    super();
-    this.state = {
-      name: "",
-      email: "",
-      password: "",
-      password2: ""
-    };
+const Register = ({ setAlert, register, isAuthenticated }) => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    password2: ""
+  });
 
-    this.onChange = this.onChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
-  }
+  if (isAuthenticated) return <Redirect to="/dashboard" />;
 
-  onChange(e) {
-    this.setState({
-      [e.target.name]: e.target.value
-    });
-  }
+  const { name, email, password, password2 } = formData;
 
-  onSubmit(e) {
+  const onChange = e =>
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const onSubmit = async e => {
     e.preventDefault();
-
-    if (this.state.password !== this.state.password2) {
-      alert("confirm password doesn't match");
+    if (password !== password2) {
+      setAlert("password does not match", "danger");
     } else {
-      const newUser = {
-        name: this.state.name,
-        email: this.state.email,
-        password: this.state.password,
-        password2: this.state.password2
-      };
-
-      this.props.register(newUser);
+      register({ name, email, password });
     }
-  }
+  };
 
-  render() {
-    if (this.props.isAuthenticated) {
-      return <Redirect to="/dashboard" />;
-    }
-
-    return (
-      <div>
-        <div className="register">
-          <div className="container">
-            <div className="row">
-              <div className="col-md-8 m-auto">
-                <h1 className="display-4 text-center">Sign Up</h1>
-                <p className="lead text-center">Create your DevJoin account</p>
-                <form onSubmit={this.onSubmit}>
-                  <div className="form-group">
-                    <input
-                      type="text"
-                      className="form-control form-control-lg"
-                      placeholder="Name"
-                      name="name"
-                      value={this.state.name}
-                      onChange={this.onChange}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <input
-                      type="email"
-                      className="form-control form-control-lg"
-                      placeholder="Email Address"
-                      name="email"
-                      value={this.state.email}
-                      onChange={this.onChange}
-                    />
-                    <small className="form-text text-muted">
-                      This site uses Gravatar so if you want a profile image,
-                      use a Gravatar email
-                    </small>
-                  </div>
-                  <div className="form-group">
-                    <input
-                      type="password"
-                      className="form-control form-control-lg"
-                      placeholder="Password"
-                      name="password"
-                      value={this.state.password}
-                      onChange={this.onChange}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <input
-                      type="password"
-                      className="form-control form-control-lg"
-                      placeholder="Confirm Password"
-                      name="password2"
-                      value={this.state.password2}
-                      onChange={this.onChange}
-                    />
-                  </div>
-                  <input
-                    type="submit"
-                    className="btn btn-info btn-block mt-4"
-                  />
-                </form>
-              </div>
-            </div>
-          </div>
+  return (
+    <Fragment>
+      <h1 className="large text-primary">Sign Up</h1>
+      <p className="lead">
+        <i className="fas fa-user"></i> Create Your Account
+      </p>
+      <form className="form" onSubmit={e => onSubmit(e)}>
+        <div className="form-group">
+          <input
+            type="text"
+            placeholder="Name"
+            name="name"
+            value={name}
+            onChange={e => onChange(e)}
+          />
         </div>
-      </div>
-    );
-  }
-}
+        <div className="form-group">
+          <input
+            type="email"
+            placeholder="Email Address"
+            name="email"
+            value={email}
+            onChange={e => onChange(e)}
+          />
+          <small className="form-text">
+            This site uses Gravatar so if you want a profile image, use a
+            Gravatar email
+          </small>
+        </div>
+        <div className="form-group">
+          <input
+            type="password"
+            placeholder="Password"
+            name="password"
+            value={password}
+            onChange={e => onChange(e)}
+          />
+        </div>
+        <div className="form-group">
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            name="password2"
+            value={password2}
+            onChange={e => onChange(e)}
+          />
+        </div>
+        <input type="submit" className="btn btn-primary" value="Register" />
+      </form>
+      <p className="my-1">
+        Already have an account? <Link to="/login">Sign In</Link>
+      </p>
+    </Fragment>
+  );
+};
 
-const mapStateToProps = state => ({
-  isAuthenticated: state.auth.isAuthenticated
+Register.prototype = {
+  setAlert: PropTypes.func.isRequired,
+  register: PropTypes.func.isRequired,
+  isAuthenticated: PropTypes.bool
+};
+
+const mapStateToProps = ({ auth }) => ({
+  isAuthenticated: auth.isAuthenticated
 });
 
-export default connect(mapStateToProps, { register })(Register);
+export default connect(mapStateToProps, { setAlert, register })(Register);
