@@ -31,6 +31,7 @@ const AddEducation = ({ addEducation, history }) => {
 
   const onSubmit = e => {
     e.preventDefault();
+    console.log(formData)
     addEducation(formData, history);
   };
   return (

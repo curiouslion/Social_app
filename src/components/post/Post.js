@@ -22,7 +22,7 @@ const Post = ({ post: { post, loading }, getPost, match }) => {
       </Link>
       <PostItem post={post} showActions={false} />
       <CommentForm postId={post._id} />
-      <div class="comments">
+      <div className="comments">
         {post.comments.map(comment => (
           <CommentItem key={comment._id} comment={comment} postId={post._id} />
         ))}

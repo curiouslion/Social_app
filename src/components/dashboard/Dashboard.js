@@ -31,9 +31,9 @@ const Dashboard = ({
           <DashboardActions />
           <Experience experience={profile.experience} />
           <Education education={profile.education} />
-          <div class="my-2">
-            <button class="btn btn-danger" onClick={() => deleteAccount()}>
-              <i class="fas fa-user-minus"></i>
+          <div className="my-2">
+            <button className="btn btn-danger" onClick={() => deleteAccount()}>
+              <i className="fas fa-user-minus"></i>
               Delete My Account
             </button>
           </div>
@@ -44,6 +44,12 @@ const Dashboard = ({
           <Link to="/create-profile" className="btn btn-primary my-1">
             Create Profile
           </Link>
+          <div className="my-2">
+            <button className="btn btn-danger" onClick={() => deleteAccount()}>
+              <i className="fas fa-user-minus"></i>
+              Delete My Account
+            </button>
+          </div>
         </Fragment>
       )}
     </Fragment>
